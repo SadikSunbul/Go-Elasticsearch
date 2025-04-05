@@ -71,6 +71,7 @@ func addSampleProducts(client *elasticsearch.Client) error {
 			client.Index.WithContext(ctx),
 			client.Index.WithDocumentID(product.ID),
 		)
+
 		if err != nil {
 			return err
 		}
