@@ -149,3 +149,38 @@ func DeletingAnIndex(client *elasticsearch.Client) {
 	}
 	fmt.Println("Deleting sn index is successfull:", d)
 }
+
+func SearchWithMatch(client *elasticsearch.Client) {
+	query := `{"query": {"match": {"name": "go"}}}` // "name" alanında "go" ara
+	d, err := client.Search(
+		client.Search.WithIndex("my_index"),
+		client.Search.WithBody(strings.NewReader(query)),
+	)
+	if err != nil {
+		log.Fatalf("Match arama hatası: %v", err)
+	}
+	fmt.Println("Match arama başarılı:", d)
+}
+
+// Toplama (Aggregation) Örneği
+func AggregateDocuments(client *elasticsearch.Client) {
+	query := `{"aggs": {"by_price": {"sum": {"field": "price"}}}}`
+	d, err := client.Search(
+		client.Search.WithIndex("my_index"),
+		client.Search.WithBody(strings.NewReader(query)),
+	)
+	if err != nil {
+		log.Fatalf("Toplama hatası: %v", err)
+	}
+	fmt.Println("Toplama başarılı:", d)
+}
+
+// Mapping ile İndeks Oluşturma
+func CreateIndexWithMapping(client *elasticsearch.Client) {
+	mapping := `{"mappings": {"properties": {"price": {"type": "integer"}}}}`
+	a, err := client.Indices.Create("my_index", client.Indices.Create.WithBody(strings.NewReader(mapping)))
+	if err != nil {
+		log.Fatalf("Mapping ile indeks oluşturma hatası: %v", err)
+	}
+	fmt.Println("Mapping ile indeks oluşturuldu:", a)
+}

@@ -87,7 +87,8 @@ func IndexDocument(client *elasticsearch.TypedClient) {
 	}
 
 	res, err := client.Index("test-index").
-		Request(document).
+		Id("1").               // Id ver
+		Request(document).     // Belgeyi struct olarak ekle
 		Refresh(refresh.True). // İndeksleme sonrası hemen yenile
 		Do(context.Background())
 	if err != nil {
